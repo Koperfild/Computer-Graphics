@@ -1,0 +1,10 @@
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\Компьютерная графика\bin\Release\Компьютерная графика.exe.config
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\Компьютерная графика\bin\Release\Компьютерная графика.exe
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\Компьютерная графика\bin\Release\Компьютерная графика.pdb
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\Компьютерная графика\bin\Release\OxyPlot.dll
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\Компьютерная графика\bin\Release\OxyPlot.WindowsForms.dll
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\Компьютерная графика\obj\Release\Компьютерная_графика.Form1.resources
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\Компьютерная графика\obj\Release\Компьютерная_графика.Properties.Resources.resources
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\Компьютерная графика\obj\Release\Компьютерная графика.csproj.GenerateResource.Cache
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\Компьютерная графика\obj\Release\Компьютерная графика.exe
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\Компьютерная графика\obj\Release\Компьютерная графика.pdb

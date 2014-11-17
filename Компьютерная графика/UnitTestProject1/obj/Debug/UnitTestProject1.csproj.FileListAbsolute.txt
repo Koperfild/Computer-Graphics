@@ -1,0 +1,7 @@
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\UnitTestProject1\bin\Debug\UnitTestProject1.dll
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\UnitTestProject1\bin\Debug\UnitTestProject1.pdb
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\UnitTestProject1\bin\Debug\Компьютерная графика.exe
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\UnitTestProject1\bin\Debug\Компьютерная графика.pdb
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\UnitTestProject1\obj\Debug\UnitTestProject1.csprojResolveAssemblyReference.cache
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\UnitTestProject1\obj\Debug\UnitTestProject1.dll
+C:\Users\Julia1\Desktop\Женя\Машинная графика\Компьютерная графика\UnitTestProject1\obj\Debug\UnitTestProject1.pdb
