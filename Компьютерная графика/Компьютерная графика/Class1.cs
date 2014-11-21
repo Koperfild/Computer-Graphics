@@ -88,6 +88,14 @@ namespace Компьютерная_графика
         {
             return Points;
         }
+        public List<Edge> getEdges()
+        {
+            return Edges;
+        }
+        public List<Bound> getBounds()
+        {
+            return Bounds;
+        }
         //public static PolyHedron polyHedron = new PolyHedron("input.vtk");
         /// <summary>
         /// Reads PolyHedron points from file with path location
@@ -112,6 +120,7 @@ namespace Компьютерная_графика
             const string Anchor2 = "POLYGONS";
             int N;//stores quantity of Anchor i entity to read (count of lines)
             string[] PointCoordinates;//stores separated line
+            double shift = 0.4;
             if (ShiftLines(Anchor1, file, out N) == 0)
             {
                 while (N > 0 && (Point = file.ReadLine()) != null)
@@ -120,11 +129,11 @@ namespace Компьютерная_графика
                     PointCoordinates = Point.Split(new char[] { ' ', '\t', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
                     ThreeDPoint tmp = new ThreeDPoint();
                     double.TryParse(PointCoordinates[0].Replace(".",","), out x);
-                    tmp.x = x;
+                    tmp.x = x+shift;
                     double.TryParse(PointCoordinates[1].Replace(".", ","), out y);
-                    tmp.y = y;
+                    tmp.y = y+shift;
                     double.TryParse(PointCoordinates[2].Replace(".", ","), out z);
-                    tmp.z = z;
+                    tmp.z = z+shift;
                     Points.Add(tmp);
                     --N;
                 }
@@ -157,6 +166,7 @@ namespace Компьютерная_графика
                         //Замыкаем ребром последнюю и первую точки грани
                         tmpBound.AddEdge(NewEdge(new Edge(Points[int.Parse(PointCoordinates[PointsPerBound])],Points[int.Parse(PointCoordinates[1])])));
                         Bounds.Add(tmpBound);//Adding current bound to list of bounds
+                        --N;
                     }
                 }
                 else throw new BoundBindingException("Error reading "+Anchor2+" of PolyHedron from file " + path);
@@ -208,17 +218,57 @@ namespace Компьютерная_графика
         //Можно в будущем этот метод переделать с условием if внутри for. Где будет проверятся ребро на видимость
         public void Draw(System.Drawing.Graphics g,float scale,PointF center)
         {
-            System.Drawing.Pen p=new System.Drawing.Pen(System.Drawing.Color.Black,1);
+            System.Drawing.Pen p=new System.Drawing.Pen(System.Drawing.Color.Blue,2);
             for (int i=0;i<Edges.Count;++i){
                 PointF P1=new PointF((float)Edges[i].Point1.x,(float)Edges[i].Point1.y);//Можно подправить мой класс Point с double на float
                 PointF P2=new PointF((float)Edges[i].Point2.x,(float)Edges[i].Point2.y);
-                P1.X = P1.X * scale + center.X+scale;//shift to center and stretch for scale coefficient 
-                P1.Y = P1.Y * scale + center.Y + scale;
-                P2.X = P2.X * scale + center.X + scale;
-                P2.Y = P2.Y * scale + center.Y + scale;
+                P1.X = P1.X + center.X;//shift to center and stretch for scale coefficient 
+                P1.Y = P1.Y + center.Y;
+                P2.X = P2.X + center.X;
+                P2.Y = P2.Y + center.Y;
                 g.DrawLine(p,P1,P2);
             }
+            p.Dispose();
         }
+        public void EdgeToRastr()
+        {
+            List<ThreeDPoint[]> EdgesPoints = new List<ThreeDPoint[]>(Edges.Count);
+            for (int i = 0; i < Edges.Count; ++i)
+            {
+                int xmin=(int)Math.Round(Edges[i].Point1.x);
+                int xmax = (int)Math.Round(Edges[i].Point2.x);
+                int ymin=(int)Math.Round(Edges[i].Point1.y);
+                int ymax=(int)Math.Round(Edges[i].Point2.y);
+                int tmp;
+                int sign=1;
+                if (xmin>xmax){
+                    tmp=xmin;
+                    xmin=xmax;
+                    xmax=tmp;
+                    sign=-1;
+                }
+                if (ymin>ymax){
+                    tmp=ymin;
+                    ymin=ymax;
+                    ymax=tmp;
+                }
+                if (xmin==xmax){
+                    EdgesPoints[i]=new ThreeDPoint[ymax-ymin+1];
+                    for (int j=ymin;j<ymax;++j){
+                        EdgesPoints[i][j].x=xmin;
+                        EdgesPoints[i][j].y=j;
+                        EdgesPoints[i][j].z=Edges[i].Point2.z-Edges[i].Point1 Edges[i].Point2.y-Edges[i].Point1.y sign*Math.Abs((Edges[i].Point1.y-Edges[i].Point2.y));
+                    }
+
+                }
+                for (int j=xmin;j)
+
+            }
+        }
+        /*void toRastr()
+        {
+            f
+        }*/
         /*
         //Перенести этот метод в клас какой нить где будут храниться и создаваться объекты находящиеся на форме (для прорисовки)
         public void DrawAxises()

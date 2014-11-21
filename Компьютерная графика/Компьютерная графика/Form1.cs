@@ -38,7 +38,7 @@ namespace Компьютерная_графика
         }
         private void DrawAxis(System.Windows.Forms.Panel panel)
         {
-            
+
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -51,14 +51,46 @@ namespace Компьютерная_графика
             //Ось Y
             g.DrawLine(p, new PointF(panel1.Width / 2, 0), new PointF(panel1.Width / 2, panel1.Height));
             //panel.Invalidate();
-            float scale=100;
-            PointF center=new PointF(panel1.Width/2,panel1.Height/2);
-            polyHedron.Draw(g,scale,center);
+            float scale = 100;
+            PointF center = new PointF(panel1.Width / 2, panel1.Height / 2);
+            polyHedron.Draw(g, scale, center);
+            p.Dispose();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             AfinPreobr.Mx(polyHedron.getPoints());
+            panel1.Invalidate();
+            //panel1_Paint(new object sender,new PaintEventArgs() e);
+        }
+        private void Z_Buffer()
+        {
+            float[,] M = new float[3, 4];//Coefficient matrix for LinearEquation by Gauss method
+            ThreeDPoint[] tmpPoint = new ThreeDPoint[3];
+            for (int i = 0; i < polyHedron.getBounds().Count; ++i)
+            {
+                for (int j = 0; j < tmpPoint.Length; ++j)
+                {
+                    //Filling M matrix with coefficients (x,y,z)
+                    tmpPoint[j] = polyHedron.getBounds()[i].getEdge(j).Point1;//As bound has at least 3 edges I don't care about different points, just take 1st of each edge
+                }
+
+                //LinearEquationSolver.Solve(M);
+                float A, B, C, D;
+                A = (float)(tmpPoint[0].y * (tmpPoint[1].z - tmpPoint[2].z) + tmpPoint[1].y * (tmpPoint[2].z - tmpPoint[0].z) + tmpPoint[2].y * (tmpPoint[0].z - tmpPoint[1].z));
+                B = (float)(tmpPoint[0].z * (tmpPoint[1].x - tmpPoint[2].x) + tmpPoint[1].z * (tmpPoint[2].x - tmpPoint[0].x) + tmpPoint[2].z * (tmpPoint[0].x - tmpPoint[1].x));
+                C = (float)(tmpPoint[0].x * (tmpPoint[1].y - tmpPoint[2].y) + tmpPoint[1].x * (tmpPoint[2].y - tmpPoint[0].y) + tmpPoint[1].x * (tmpPoint[0].y - tmpPoint[1].y));
+                D = (float)(-(tmpPoint[0].x * (tmpPoint[1].y * tmpPoint[2].z - tmpPoint[2].y * tmpPoint[1].z) + tmpPoint[1].x * (tmpPoint[2].y * tmpPoint[0].z - tmpPoint[0].y * tmpPoint[2].z) + tmpPoint[2].x * (tmpPoint[0].y * tmpPoint[1].z - tmpPoint[1].y * tmpPoint[0].z)));
+                /*for (int k = 0; k < panel1.Width; ++k)
+                {
+                    Z = Z(x, y);//Вставлять итерационную формулу и перед ней расчёт z[0]. Перед всем этим создать Z Buffer и заполнить максимальными/минимальными значениями. Далее сравнивать z(x,y) с этими значениями и обновлять Z Buffer             }
+                }*/
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            AfinPreobr.T(Convert.ToDouble(numericUpDown4.Value), Convert.ToDouble(numericUpDown5.Value), Convert.ToDouble(numericUpDown6.Value), polyHedron.getPoints());
             panel1.Invalidate();
         }
     }
