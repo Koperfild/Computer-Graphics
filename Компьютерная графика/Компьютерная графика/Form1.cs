@@ -51,19 +51,23 @@ namespace Компьютерная_графика
             //Ось Y
             g.DrawLine(p, new PointF(panel1.Width / 2, 0), new PointF(panel1.Width / 2, panel1.Height));
             //panel.Invalidate();
-            float scale = 100;
+            //float scale = 100;
             PointF center = new PointF(panel1.Width / 2, panel1.Height / 2);
-            polyHedron.Draw(g, scale, center);
+            polyHedron.Draw(g, center);
             p.Dispose();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            AfinPreobr.Mx(polyHedron.getPoints());
+            AfinPreobr.Rx(Convert.ToDouble(numericUpDown7.Value), polyHedron.getPoints());
+            if (Z_buffer_Was_Used)
+            {
+                polyHedron.Z_Buffer();
+            }
             panel1.Invalidate();
             //panel1_Paint(new object sender,new PaintEventArgs() e);
         }
-        private void Z_Buffer()
+        /*private void Z_Buffer()
         {
             float[,] M = new float[3, 4];//Coefficient matrix for LinearEquation by Gauss method
             ThreeDPoint[] tmpPoint = new ThreeDPoint[3];
@@ -85,12 +89,75 @@ namespace Компьютерная_графика
                 {
                     Z = Z(x, y);//Вставлять итерационную формулу и перед ней расчёт z[0]. Перед всем этим создать Z Buffer и заполнить максимальными/минимальными значениями. Далее сравнивать z(x,y) с этими значениями и обновлять Z Buffer             }
                 }*/
-            }
-        }
+            //}
+        //}
 
         private void button8_Click(object sender, EventArgs e)
         {
             AfinPreobr.T(Convert.ToDouble(numericUpDown4.Value), Convert.ToDouble(numericUpDown5.Value), Convert.ToDouble(numericUpDown6.Value), polyHedron.getPoints());
+            panel1.Invalidate();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            AfinPreobr.D(Convert.ToDouble(numericUpDown3.Value), Convert.ToDouble(numericUpDown2.Value), Convert.ToDouble(numericUpDown1.Value), polyHedron.getPoints());
+            panel1.Invalidate();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            polyHedron.Z_Buffer();
+            Z_buffer_Was_Used = true;
+            panel1.Invalidate();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            AfinPreobr.Mx(polyHedron.getPoints());
+            panel1.Invalidate();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            AfinPreobr.Ry(Convert.ToDouble(numericUpDown8.Value), polyHedron.getPoints());
+            if (Z_buffer_Was_Used)
+            {
+                polyHedron.Z_Buffer();
+            }
+            panel1.Invalidate();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            AfinPreobr.Rz(Convert.ToDouble(numericUpDown9.Value), polyHedron.getPoints());
+            if (Z_buffer_Was_Used)
+            {
+                polyHedron.Z_Buffer();
+            }
+            panel1.Invalidate();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            AfinPreobr.D(1/Convert.ToDouble(numericUpDown3.Value), 1/Convert.ToDouble(numericUpDown2.Value), 1/Convert.ToDouble(numericUpDown1.Value), polyHedron.getPoints());
+            panel1.Invalidate();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            AfinPreobr.T(-Convert.ToDouble(numericUpDown4.Value), -Convert.ToDouble(numericUpDown5.Value), -Convert.ToDouble(numericUpDown6.Value), polyHedron.getPoints());
+            panel1.Invalidate();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            AfinPreobr.My(polyHedron.getPoints());
+            panel1.Invalidate();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            AfinPreobr.Mz(polyHedron.getPoints());
             panel1.Invalidate();
         }
     }

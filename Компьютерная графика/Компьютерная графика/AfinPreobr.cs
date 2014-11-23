@@ -26,9 +26,9 @@ namespace Компьютерная_графика
         }
         static void ClearMatr()
         {
-            for (int i = 0; i < Matr.Rank; ++i)
+            for (int i = 0; i < Matr.Length; ++i)
             {
-                for (int j = 0; j < Matr[0].Rank; ++j)
+                for (int j = 0; j < Matr[0].Length; ++j)
                 {
                     Matr[i][j] = 0;
                 }
@@ -143,7 +143,7 @@ namespace Компьютерная_графика
         public static void T(double lambda, double mu, double nu, List<ThreeDPoint> Points)
         {
             ClearMatr();
-            for (int i = 0; i < Matr[0].Rank; ++i)
+            for (int i = 0; i < Matr[0].Length; ++i)
             {
                 Matr[i][i] = 1;
             }

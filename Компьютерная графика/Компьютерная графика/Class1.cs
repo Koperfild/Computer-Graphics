@@ -29,10 +29,12 @@ namespace Компьютерная_графика
     }
     public class Edge
     {
+        public bool Visible { get; set; }
         public ThreeDPoint Point1 { get; set; }
         public ThreeDPoint Point2 { get; set; }
         public Edge(ThreeDPoint Point1, ThreeDPoint Point2)
         {
+            this.Visible = true;
             this.Point1 = Point1;
             this.Point2 = Point2;
         }
@@ -50,6 +52,10 @@ namespace Компьютерная_графика
     public class Bound//Грань
     {
         List<Edge> Edges = new List<Edge>();
+        public List<Edge> getEdges()
+        {
+            return Edges;
+        }
         public Edge getEdge(int i)
         {
             return Edges[i];
@@ -216,21 +222,81 @@ namespace Компьютерная_графика
             return -1;//Not ok. Shifted till the end of file
         }
         //Можно в будущем этот метод переделать с условием if внутри for. Где будет проверятся ребро на видимость
-        public void Draw(System.Drawing.Graphics g,float scale,PointF center)
+        public void Draw(System.Drawing.Graphics g,PointF center)
         {
             System.Drawing.Pen p=new System.Drawing.Pen(System.Drawing.Color.Blue,2);
             for (int i=0;i<Edges.Count;++i){
-                PointF P1=new PointF((float)Edges[i].Point1.x,(float)Edges[i].Point1.y);//Можно подправить мой класс Point с double на float
-                PointF P2=new PointF((float)Edges[i].Point2.x,(float)Edges[i].Point2.y);
-                P1.X = P1.X + center.X;//shift to center and stretch for scale coefficient 
-                P1.Y = P1.Y + center.Y;
-                P2.X = P2.X + center.X;
-                P2.Y = P2.Y + center.Y;
-                g.DrawLine(p,P1,P2);
+                if (Edges[i].Visible)
+                {
+                    PointF P1=new PointF((float)Edges[i].Point1.x,(float)Edges[i].Point1.y);//Можно подправить мой класс Point с double на float
+                    PointF P2=new PointF((float)Edges[i].Point2.x,(float)Edges[i].Point2.y);
+                    P1.X = P1.X + center.X;//shift to center and stretch for scale coefficient 
+                    P1.Y = P1.Y + center.Y;
+                    P2.X = P2.X + center.X;
+                    P2.Y = P2.Y + center.Y;
+                    g.DrawLine(p,P1,P2);
+                }
             }
             p.Dispose();
         }
-        public void EdgeToRastr()
+        public void Z_Buffer(){
+            //Null inititalization for all edges in the beginning of algorithm. Then if bound is visible all its edges visible property sets to True
+            for (int i=0;i<getEdges().Count;++i){
+                getEdges()[i].Visible=false;
+            }
+            ThreeDPoint midPoint=new ThreeDPoint();
+            for (int i=0;i<Points.Count;++i){
+                midPoint.x+=getPoints()[i].x;
+                midPoint.y+=getPoints()[i].y;
+                midPoint.z+=getPoints()[i].z;
+            }
+            midPoint.x/=getPoints().Count;
+            midPoint.y/=getPoints().Count;
+            midPoint.z/=getPoints().Count;
+            ThreeDPoint[] tmpPoint = new ThreeDPoint[3];
+            for (int i = 0; i < getBounds().Count; ++i)
+            {
+                tmpPoint[0] = getBounds()[i].getEdge(0).Point1;
+                tmpPoint[1] = getBounds()[i].getEdge(0).Point2;
+                if (getBounds()[i].getEdge(0).Point1 == getBounds()[i].getEdge(1).Point1 || getBounds()[i].getEdge(0).Point2 == getBounds()[i].getEdge(1).Point1)
+                {
+                    tmpPoint[2] = getBounds()[i].getEdge(1).Point2;
+                }
+                else
+                {
+                    tmpPoint[2] = getBounds()[i].getEdge(1).Point1;
+                }
+
+
+                //LinearEquationSolver.Solve(M);
+                double A, B, C, D;
+
+                A = (tmpPoint[0].y * (tmpPoint[1].z - tmpPoint[2].z) + tmpPoint[1].y * (tmpPoint[2].z - tmpPoint[0].z) + tmpPoint[2].y * (tmpPoint[0].z - tmpPoint[1].z)) + 100;
+                B = (tmpPoint[0].z * (tmpPoint[1].x - tmpPoint[2].x) + tmpPoint[1].z * (tmpPoint[2].x - tmpPoint[0].x) + tmpPoint[2].z * (tmpPoint[0].x - tmpPoint[1].x));
+                C = (tmpPoint[0].x * (tmpPoint[1].y - tmpPoint[2].y) + tmpPoint[1].x * (tmpPoint[2].y - tmpPoint[0].y) + tmpPoint[2].x * (tmpPoint[0].y - tmpPoint[1].y));
+                D = (-(tmpPoint[0].x * (tmpPoint[1].y * tmpPoint[2].z - tmpPoint[2].y * tmpPoint[1].z) + tmpPoint[1].x * (tmpPoint[2].y * tmpPoint[0].z - tmpPoint[0].y * tmpPoint[2].z) + tmpPoint[2].x * (tmpPoint[0].y * tmpPoint[1].z - tmpPoint[1].y * tmpPoint[0].z)));
+                double sign = A * (float)midPoint.x + B * (float)midPoint.y + C * (float)midPoint.z + D;
+                if (sign > 0)
+                {
+                    A = -A;
+                    B = -B;
+                    C = -C;
+                }
+                double scalarProizv = C * (-1);//Multiplying for -1 because normal to Oxy is (0,0,-1) and scalar multiplying is just -1 multiplying
+                if (scalarProizv > 0)
+                {
+                    for (int k = 0; k < Bounds[i].getEdges().Count; ++k)
+                    {
+                        Bounds[i].getEdge(k).Visible = true;
+                    }
+                }
+                /*for (int k = 0; k < panel1.Width; ++k)
+                {
+                    Z = Z(x, y);//Вставлять итерационную формулу и перед ней расчёт z[0]. Перед всем этим создать Z Buffer и заполнить максимальными/минимальными значениями. Далее сравнивать z(x,y) с этими значениями и обновлять Z Buffer             }
+                }*/
+            }
+        }
+        /*public void EdgeToRastr()
         {
             List<ThreeDPoint[]> EdgesPoints = new List<ThreeDPoint[]>(Edges.Count);
             for (int i = 0; i < Edges.Count; ++i)
@@ -264,7 +330,7 @@ namespace Компьютерная_графика
                 for (int j=xmin;j)
 
             }
-        }
+        }*/
         /*void toRastr()
         {
             f
