@@ -374,6 +374,7 @@ namespace Компьютерная_графика
             ThreeDPoint CrossPoint;
             bool One_cross,Two_crosses;
             One_cross = Two_crosses = false;
+            //Надо написать метод который берёт точку пересечения и ребро грани А.Далее ищется пересечение продолжения пересекающего ребра (грани Б) и какого нить ребра грани А. Т.е. именно ПРОДОЛЖЕНИЕ ребра Б и одно ребро А
             for (int j = 0; j < Bounds.Count; ++j)
             {
                 if (Bounds[j] == nearestPlane)
@@ -384,7 +385,7 @@ namespace Компьютерная_графика
                 {
                     for (int k = 0; j < Bounds[j].getEdges().Count; ++k)
                     {
-
+                        
                     }
                 }
             }

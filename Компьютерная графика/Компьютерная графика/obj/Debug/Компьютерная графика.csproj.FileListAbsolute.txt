@@ -19,3 +19,9 @@ C:\Users\Женя\Documents\GitHub\Computer-Graphics\Компьютерная г
 C:\Users\Julia1\Documents\GitHub\Computer-Graphics\Компьютерная графика\Компьютерная графика\bin\Debug\Компьютерная графика.exe.config
 C:\Users\Julia1\Documents\GitHub\Computer-Graphics\Компьютерная графика\Компьютерная графика\obj\Debug\Компьютерная графика.exe
 C:\Users\Julia1\Documents\GitHub\Computer-Graphics\Компьютерная графика\Компьютерная графика\obj\Debug\Компьютерная графика.pdb
+C:\Users\Julia1\Documents\GitHub\Computer-Graphics\Компьютерная графика\Компьютерная графика\bin\Debug\Компьютерная графика.exe
+C:\Users\Julia1\Documents\GitHub\Computer-Graphics\Компьютерная графика\Компьютерная графика\bin\Debug\Компьютерная графика.pdb
+C:\Users\Julia1\Documents\GitHub\Computer-Graphics\Компьютерная графика\Компьютерная графика\obj\Debug\Компьютерная графика.csprojResolveAssemblyReference.cache
+C:\Users\Julia1\Documents\GitHub\Computer-Graphics\Компьютерная графика\Компьютерная графика\obj\Debug\Компьютерная_графика.Form1.resources
+C:\Users\Julia1\Documents\GitHub\Computer-Graphics\Компьютерная графика\Компьютерная графика\obj\Debug\Компьютерная_графика.Properties.Resources.resources
+C:\Users\Julia1\Documents\GitHub\Computer-Graphics\Компьютерная графика\Компьютерная графика\obj\Debug\Компьютерная графика.csproj.GenerateResource.Cache
