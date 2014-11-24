@@ -38,6 +38,48 @@ namespace Компьютерная_графика
             this.Point1 = Point1;
             this.Point2 = Point2;
         }
+        /// <summary>
+        /// Compares 2 edges by z derivative
+        /// </summary>
+        /// <param name="e1"></param>
+        /// <param name="e2"></param>
+        /// <returns></returns>
+        public static int CompareByZ(Edge e1, Edge e2)
+        {
+            //Нормируем вектора граней и сравниваем по z координате
+            double z1=Math.Abs(e1.Point2.z-e1.Point1.z)/(Math.Sqrt(Math.Pow(e1.Point2.x-e1.Point1.x,2)+Math.Pow(e1.Point2.y-e1.Point1.y,2)+Math.Pow(e1.Point2.z-e1.Point1.z,2)));//Можно и без Math.Sqrt Для быстродействия. Рез-т одинаковый
+            double z2 = Math.Abs(e2.Point2.z - e2.Point1.z) / (Math.Sqrt(Math.Pow(e2.Point2.x - e2.Point1.x, 2) + Math.Pow(e2.Point2.y - e2.Point1.y, 2) + Math.Pow(e2.Point2.z - e2.Point1.z, 2)));
+            return z2.CompareTo(z1);
+        }
+        /// <summary>
+        /// Finds cross point of 2 edges. If doesn't cross then return null
+        /// </summary>
+        /// <param name="e1"></param>
+        /// <param name="e2"></param>
+        /// <returns>Point of crossing or null</returns>
+        public static ThreeDPoint CrossPointofEdges(Edge e1,Edge e2){
+            double A1, B1, A2, B2, C1, C2;
+            B1 = e1.Point2.x - e1.Point1.x;
+            A1 = -(e1.Point2.y - e1.Point1.y);//- because of directing vector (
+            C1 = -A1 * e1.Point1.x - B1 * e1.Point1.y;
+
+            B2 = e2.Point2.x - e2.Point1.x;
+            A2 = -(e2.Point2.y - e2.Point1.y);//- because of directing vector (
+            C2 = -A1 * e2.Point1.x - B1 * e2.Point1.y;
+            double[,] M=new double[2,3]{
+                {A1,B1,C1},
+                {A2,B2,C2}
+            };
+            //Solving system of 2 linear equations (for each edge)
+            if (LinearEquationSolver.Solve(M))//Проверить изменяется ли матрица
+            {
+                ThreeDPoint CrossPoint = new ThreeDPoint();
+                CrossPoint.x = M[0, 2];
+                CrossPoint.y = M[1, 2];
+                return CrossPoint;
+            }
+            else return null;
+        }
 
     }
     public class BoundBindingException:Exception//Для использования в конструкторе Bound
@@ -268,7 +310,7 @@ namespace Компьютерная_графика
                 }
 
 
-                //LinearEquationSolver.Solve(M);
+                //Defining of bound coefficients
                 double A, B, C, D;
 
                 A = (tmpPoint[0].y * (tmpPoint[1].z - tmpPoint[2].z) + tmpPoint[1].y * (tmpPoint[2].z - tmpPoint[0].z) + tmpPoint[2].y * (tmpPoint[0].z - tmpPoint[1].z)) + 100;
@@ -282,8 +324,9 @@ namespace Компьютерная_графика
                     B = -B;
                     C = -C;
                 }
+                //Scalar multiplication which shows direction of bound normal relative to Oxy plane (0,0,-1)
                 double scalarProizv = C * (-1);//Multiplying for -1 because normal to Oxy is (0,0,-1) and scalar multiplying is just -1 multiplying
-                if (scalarProizv > 0)
+                if (scalarProizv > 0)//if >0 then it is faced to us
                 {
                     for (int k = 0; k < Bounds[i].getEdges().Count; ++k)
                     {
@@ -294,6 +337,59 @@ namespace Компьютерная_графика
                 {
                     Z = Z(x, y);//Вставлять итерационную формулу и перед ней расчёт z[0]. Перед всем этим создать Z Buffer и заполнить максимальными/минимальными значениями. Далее сравнивать z(x,y) с этими значениями и обновлять Z Buffer             }
                 }*/
+            }
+        }
+        public void Weiler_Azerton()
+        {
+            ThreeDPoint nearestPt = new ThreeDPoint();
+            nearestPt.z=Points[0].z;
+            //defining the nearest plane
+            for (int i = 0; i < Points.Count; ++i)
+            {
+                if (Points[i].z < nearestPt.z)
+                {
+                    nearestPt.z = Points[i].z;
+                }
+            }
+            List<Edge> tmpEdges=new List<Edge>();
+            for (int i = 0; i < Edges.Count; ++i)
+            {
+                if (Edges[i].Point1 == nearestPt || Edges[i].Point2 == nearestPt)
+                {
+                    tmpEdges.Add(Edges[i]);
+                }
+            }
+            tmpEdges.Sort(Edge.CompareByZ);
+            Bound nearestPlane=new Bound();
+            for (int i = 0; i < Bounds.Count; ++i)
+            {
+                if (Bounds[i].getEdges().Contains(tmpEdges[0]) && Bounds[i].getEdges().Contains(tmpEdges[1]))
+                {
+                    nearestPlane=Bounds[i];
+                    break;
+                }
+            }
+            //Nearest plane is found. Let's find parts of underlaying planes to cut
+            //Passes for all bounds. For each looks for edges crossing edges of nearestPlane
+            ThreeDPoint CrossPoint;
+            bool One_cross,Two_crosses;
+            One_cross = Two_crosses = false;
+            for (int j = 0; j < Bounds.Count; ++j)
+            {
+                if (Bounds[j] == nearestPlane)
+                {
+                    continue;
+                }
+                for (int i = 0; i < nearestPlane.getEdges().Count; ++i)
+                {
+                    for (int k = 0; k < Bounds[j].getEdges().Count; ++k)
+                    {
+                        CrossPoint = Edge.CrossPointofEdges(nearestPlane.getEdge(i),Bounds[j].getEdge(k));
+                        if (CrossPoint == null) { continue; }
+                        if (One_cross) { Two_crosses = true; }
+                        One_cross = true;
+                    }
+                }
             }
         }
         /*public void EdgeToRastr()

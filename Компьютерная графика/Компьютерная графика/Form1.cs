@@ -160,5 +160,17 @@ namespace Компьютерная_графика
             AfinPreobr.Mz(polyHedron.getPoints());
             panel1.Invalidate();
         }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            AfinPreobr.Rx(Convert.ToDouble(numericUpDown7.Value), polyHedron.getPoints());
+            AfinPreobr.Ry(Convert.ToDouble(numericUpDown8.Value), polyHedron.getPoints());
+            AfinPreobr.Rz(Convert.ToDouble(numericUpDown9.Value), polyHedron.getPoints());
+            if (Z_buffer_Was_Used)
+            {
+                polyHedron.Z_Buffer();
+            }
+            panel1.Invalidate();
+        }
     }
 }

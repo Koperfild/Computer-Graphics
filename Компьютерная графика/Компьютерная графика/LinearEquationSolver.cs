@@ -14,7 +14,7 @@ namespace Компьютерная_графика
         /// It will contain the solution in "row canonical form" if the function returns "true".
         /// </param>
         /// <returns>Returns whether the matrix has a unique solution or not.</returns>
-        public static bool Solve(float[,] M)
+        public static bool Solve(double[,] M)
         {
             // input checks
             int rowCount = M.GetUpperBound(0) + 1;
@@ -34,7 +34,7 @@ namespace Компьютерная_графика
                     if (M[swapRow, col] != 0) // found a non-zero coefficient?
                     {
                         // yes, then swap it with the above
-                        float[] tmp = new float[rowCount + 1];
+                        double[] tmp = new double[rowCount + 1];
                         for (int i = 0; i < rowCount + 1; i++)
                         { tmp[i] = M[swapRow, i]; M[swapRow, i] = M[col, i]; M[col, i] = tmp[i]; }
                     }
@@ -46,8 +46,8 @@ namespace Компьютерная_графика
             {
                 for (int destRow = sourceRow + 1; destRow < rowCount; destRow++)
                 {
-                    float df = M[sourceRow, sourceRow];
-                    float sf = M[destRow, sourceRow];
+                    double df = M[sourceRow, sourceRow];
+                    double sf = M[destRow, sourceRow];
                     for (int i = 0; i < rowCount + 1; i++)
                         M[destRow, i] = M[destRow, i] * df - M[sourceRow, i] * sf;
                 }
@@ -56,7 +56,7 @@ namespace Компьютерная_графика
             // back-insertion
             for (int row = rowCount - 1; row >= 0; row--)
             {
-                float f = M[row, row];
+                double f = M[row, row];
                 if (f == 0) return false;
 
                 for (int i = 0; i < rowCount + 1; i++) M[row, i] /= f;
