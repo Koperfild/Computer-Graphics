@@ -382,6 +382,20 @@ namespace Компьютерная_графика
                 }
                 for (int i = 0; i < nearestPlane.getEdges().Count; ++i)
                 {
+                    for (int k = 0; j < Bounds[j].getEdges().Count; ++k)
+                    {
+
+                    }
+                }
+            }
+            /*for (int j = 0; j < Bounds.Count; ++j)
+            {
+                if (Bounds[j] == nearestPlane)
+                {
+                    continue;
+                }
+                for (int i = 0; i < nearestPlane.getEdges().Count; ++i)
+                {
                     for (int k = 0; k < Bounds[j].getEdges().Count; ++k)
                     {
                         CrossPoint = Edge.CrossPointofEdges(nearestPlane.getEdge(i),Bounds[j].getEdge(k));
@@ -390,7 +404,7 @@ namespace Компьютерная_графика
                         One_cross = true;
                     }
                 }
-            }
+            }*/
         }
         /*public void EdgeToRastr()
         {
