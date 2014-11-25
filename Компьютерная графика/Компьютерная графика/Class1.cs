@@ -52,7 +52,7 @@ namespace Компьютерная_графика
             return z2.CompareTo(z1);
         }
         /// <summary>
-        /// Finds cross point of 2 edges. If doesn't cross then return null
+        /// Finds cross point of 2 edges. If 2 Edges doesn't have common point it returns null
         /// </summary>
         /// <param name="e1"></param>
         /// <param name="e2"></param>
@@ -71,15 +71,22 @@ namespace Компьютерная_графика
                 {A2,B2,C2}
             };
             //Solving system of 2 linear equations (for each edge)
+            ThreeDPoint CrossPoint = new ThreeDPoint();
             if (LinearEquationSolver.Solve(M))//Проверить изменяется ли матрица
             {
-                ThreeDPoint CrossPoint = new ThreeDPoint();
+                
                 CrossPoint.x = M[0, 2];
                 CrossPoint.y = M[1, 2];
+                //return CrossPoint;
+            }
+            //defining of belonging point to edge by distance from 2 points of edge. Math.Abs(e1.Point1.x - e1.Point2.x) is distance(by Ox) between 2 points of edge
+            if (Math.Abs(e1.Point1.x - CrossPoint.x) < Math.Abs(e1.Point1.x - e1.Point2.x) && Math.Abs(e1.Point2.x - CrossPoint.x) < Math.Abs(e1.Point1.x - e1.Point2.x))
+            {
                 return CrossPoint;
             }
             else return null;
         }
+
 
     }
     public class BoundBindingException:Exception//Для использования в конструкторе Bound
@@ -91,7 +98,7 @@ namespace Компьютерная_графика
     /// <summary>
     /// Грань многогранника
     /// </summary>
-    public class Bound//Грань
+    public class Bound:ICloneable//Грань
     {
         List<Edge> Edges = new List<Edge>();
         public List<Edge> getEdges()
@@ -125,6 +132,27 @@ namespace Компьютерная_графика
                 Edges.Add(v[i]);
             }*/
             Edges = v;
+        }
+        public object Clone()
+        {
+            Bound b = new Bound();
+            for (int i = 0; i < this.Edges.Count; ++i)
+            {
+                ThreeDPoint pt1=new ThreeDPoint();
+                pt1.x=this.Edges[i].Point1.x;
+                pt1.y=this.Edges[i].Point1.y;
+                pt1.z=this.Edges[i].Point1.z;
+                
+                ThreeDPoint pt2=new ThreeDPoint();
+                pt2.x=this.Edges[i].Point2.x;
+                pt2.y=this.Edges[i].Point2.y;
+                pt2.z=this.Edges[i].Point2.z;
+                
+                Edge e=new Edge(pt1,pt2);
+                b.Edges.Add(e);
+            }
+            return b;
+            //throw new NotImplementedException();
         }
     }
     public class PolyHedron
@@ -341,6 +369,13 @@ namespace Компьютерная_графика
         }
         public void Weiler_Azerton()
         {
+            //смотреть не перекрывает ли Bounds полt класса Bounds
+            //Create copy of Bounds to modify
+            List<Bound> Bounds = new List<Bound>();
+            for (int i = 0; i < this.Bounds.Count; ++i)
+            {
+                Bounds.Add((Bound)this.Bounds[i].Clone());
+            }
             ThreeDPoint nearestPt = new ThreeDPoint();
             nearestPt.z=Points[0].z;
             //defining the nearest plane
@@ -371,10 +406,11 @@ namespace Компьютерная_графика
             }
             //Nearest plane is found. Let's find parts of underlaying planes to cut
             //Passes for all bounds. For each looks for edges crossing edges of nearestPlane
-            ThreeDPoint CrossPoint;
+            
             bool One_cross,Two_crosses;
             One_cross = Two_crosses = false;
             //Надо написать метод который берёт точку пересечения и ребро грани А.Далее ищется пересечение продолжения пересекающего ребра (грани Б) и какого нить ребра грани А. Т.е. именно ПРОДОЛЖЕНИЕ ребра Б и одно ребро А
+            //Нужен метод который будет брать ребро грани Б и по очереди проверять рёбра грани А на пересечение. По рёбрам Б и А строится прямая, далее находится точка пересечения и далее смотрится принадлежит ли данная точка текущему ребру А. (проверять изначальное ребро А не надо, надо передавать ссылку на это ребро чтобы его не проверять (путём сравнения ==))
             for (int j = 0; j < Bounds.Count; ++j)
             {
                 if (Bounds[j] == nearestPlane)
@@ -383,9 +419,20 @@ namespace Компьютерная_графика
                 }
                 for (int i = 0; i < nearestPlane.getEdges().Count; ++i)
                 {
-                    for (int k = 0; j < Bounds[j].getEdges().Count; ++k)
+                    //Думать куда впихнуть эти переменные
+                    Edge firstCrossedEdge = new Edge(null,null);
+                    Edge secondCrossedEdge = new Edge(null, null);
+                    ThreeDPoint CrossPoint;
+                    for (int k = 0; k < Bounds[j].getEdges().Count; ++k)
                     {
-                        
+                        if (nearestPlane.getEdge(i) == Bounds[j].getEdge(k))
+                        {
+                            continue;
+                        }
+                        if ((CrossPoint = Edge.CrossPointofEdges(nearestPlane.getEdge(i), Bounds[j].getEdge(k))) != null)
+                        {
+
+                        }
                     }
                 }
             }
